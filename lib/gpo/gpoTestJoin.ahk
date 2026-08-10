@@ -45,12 +45,12 @@ class GPOTestJoin {
 
         GPOTestJoin.running := !GPOTestJoin.running
         if GPOTestJoin.running {
-            GPOTestJoin.ShowStatus("Starting direct join workflow test on Desktop #" GPOTestJoin.afkDesktop "...")
+            GPOTestJoin.ShowStatus("Starting...")
             GPOTestJoin.LoadConfig()
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), -10
         } else {
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPOTestJoin.ShowStatus("Direct join workflow stopped.")
+            GPOTestJoin.ShowStatus("Stopped")
             SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
@@ -59,7 +59,7 @@ class GPOTestJoin {
         if GPOTestJoin.running {
             GPOTestJoin.running := false
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPOTestJoin.ShowStatus("Direct join workflow stopped.")
+            GPOTestJoin.ShowStatus("Stopped")
             SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
@@ -79,6 +79,7 @@ class GPOTestJoin {
         ; Switch to AFK Desktop
         if (!GPOTestJoin.running)
             return
+        GPOTestJoin.ShowStatus("Switching Desktop...")
         GPOTestJoin.SwitchDesktop(GPOTestJoin.afkDesktop)
         if (!GPOTestJoin._SleepIfRunning(500))
             return
@@ -86,6 +87,7 @@ class GPOTestJoin {
         ; Launch Roblox GPO
         if (!GPOTestJoin.running)
             return
+        GPOTestJoin.ShowStatus("Launching Roblox...")
         Run "roblox://placeId=" GPOTestJoin.placeId
 
         ; Wait up to 20s for Roblox window to exist & focus/maximize it
@@ -97,7 +99,7 @@ class GPOTestJoin {
         ; Constantly click (1886, 1050) until main_screen.png appears (no timeout)
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking (1886, 1050) until main_screen.png appears...")
+        GPOTestJoin.ShowStatus("Loading...")
 
         while (GPOTestJoin.running) {
             foundX := 0, foundY := 0
@@ -116,14 +118,14 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
 
-        GPOTestJoin.ShowStatus("main_screen.png detected! Proceeding to main menu...")
+        GPOTestJoin.ShowStatus("Menu Found...")
         if (!GPOTestJoin._SleepIfRunning(1000))
             return
 
         ; Main Menu PS Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking PS Button (" GPOTestJoin.coordPsBtn.x ", " GPOTestJoin.coordPsBtn.y ")...")
+        GPOTestJoin.ShowStatus("Opening PS...")
         MouseMove GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
         Sleep 150
         Click GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
@@ -133,7 +135,7 @@ class GPOTestJoin {
         ; PS Code Box
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking PS Code Box (" GPOTestJoin.coordPsBox.x ", " GPOTestJoin.coordPsBox.y ")...")
+        GPOTestJoin.ShowStatus("Focusing Code...")
         MouseMove GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
         Sleep 150
         Click GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
@@ -143,7 +145,7 @@ class GPOTestJoin {
         ; Paste PS Code & Enter
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Pasting PS Code: " GPOTestJoin.psCode)
+        GPOTestJoin.ShowStatus("Pasting Code...")
         A_Clipboard := GPOTestJoin.psCode
         ClipWait 1
         if (!GPOTestJoin.running)
@@ -158,7 +160,7 @@ class GPOTestJoin {
         ; Regular Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking Regular Button (" GPOTestJoin.coordRegBtn.x ", " GPOTestJoin.coordRegBtn.y ")...")
+        GPOTestJoin.ShowStatus("Joining Server...")
         MouseMove GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
         Sleep 150
         Click GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
@@ -168,14 +170,14 @@ class GPOTestJoin {
         ; First Sea Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking First Sea Button (" GPOTestJoin.coordSeaBtn.x ", " GPOTestJoin.coordSeaBtn.y ")...")
+        GPOTestJoin.ShowStatus("Entering Sea...")
         MouseMove GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
         Sleep 150
         Click GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
 
         if (GPOTestJoin.running) {
             GPOTestJoin.running := false
-            GPOTestJoin.ShowStatus("Join sequence finished!")
+            GPOTestJoin.ShowStatus("Join Complete!")
             SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -3000
         }
     }
@@ -252,7 +254,7 @@ class GPOTestJoin {
         Sleep 250
     }
 
-    ; ── Clickthrough Text Status Overlay (Position 50, 1000) ───────────────
+    ; ── Clickthrough Text Status Overlay (Screen 0, 1079) ───────────────────
     static ShowStatus(text) {
         if (!GPOTestJoin.statusGui) {
             ; +AlwaysOnTop: keep overlay visible over game windows
@@ -262,13 +264,13 @@ class GPOTestJoin {
             GPOTestJoin.statusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
             GPOTestJoin.statusGui.BackColor := "0d0d11"
             GPOTestJoin.statusGui.SetFont("s10 c0x00FF88 Bold", "Segoe UI")
-            GPOTestJoin.statusTxt := GPOTestJoin.statusGui.Add("Text", "w450 h24 Center", text)
+            GPOTestJoin.statusTxt := GPOTestJoin.statusGui.Add("Text", "w200 h24 Left", text)
             WinSetTransColor "0d0d11 220", GPOTestJoin.statusGui
         } else {
             GPOTestJoin.statusTxt.Value := text
         }
-        ; Position overlay at (50, 1000) without stealing input focus
-        GPOTestJoin.statusGui.Show("x50 y1000 NoActivate")
+        ; Position overlay at Screen (0, 1079) without stealing input focus
+        GPOTestJoin.statusGui.Show("x0 y1055 NoActivate")
     }
 
     static HideStatus() {
