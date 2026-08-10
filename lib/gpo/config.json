@@ -1,28 +1,56 @@
 {
-  "gpo_ps_code": "Jk2JKTAKCf",
-  "roblox_place_id": "1730877806",
-  "afk_desktop_index": 3,
-  "confidence": 0.7,
-  "menu_timeout_seconds": 90,
-  "merchant_alarm_lead_seconds": 15,
-  "afk_timeout_seconds": 300,
-  "calibrated_refresh_timestamp": 1786372199,
+  "_title": "GPO Merchant Sync & Auto-Join Configuration",
+  "_version": "2.0.0",
+
+  "server": {
+    "_comment": "Roblox Server & Private Server Connection Settings",
+    "gpo_ps_code": "Jk2JKTAKCf",
+    "roblox_place_id": "1730877806"
+  },
+
+  "desktops": {
+    "_comment": "Windows Virtual Desktop Indices (1-based index)",
+    "afk_desktop_index": 3,
+    "home_desktop_index": 1
+  },
+
+  "schedule": {
+    "_comment": "Stock Refresh & Merchant Spawn Schedule Settings (Seconds)",
+    "stock_refresh_interval_seconds": 1800,
+    "join_lead_seconds": 810,
+    "merchant_spawn_delay_seconds": 210,
+    "merchant_alarm_lead_seconds": 15,
+    "afk_timeout_seconds": 300,
+    "calibrated_refresh_timestamp": 1786372199
+  },
+
+  "delays": {
+    "_comment": "Workflow Step Micro-Delays & Timeouts",
+    "afk_desktop_delay_ms": 500,
+    "roblox_wait_timeout_seconds": 20,
+    "roblox_focus_delay_ms": 1000,
+    "main_screen_click_interval_ms": 400,
+    "main_screen_post_delay_ms": 1000,
+    "ps_button_delay_ms": 1500,
+    "ps_box_delay_ms": 500,
+    "paste_code_delay_ms": 300,
+    "enter_key_delay_ms": 2500,
+    "regular_button_delay_ms": 2000
+  },
+
+  "assets_and_detection": {
+    "_comment": "Image Recognition & Audio Alert Settings",
+    "confidence": 0.7,
+    "main_screen_image": "main_screen.png",
+    "alarm_beep_count": 4
+  },
+
   "coords": {
-    "ps_button": {
-      "x": 1650,
-      "y": 714
-    },
-    "ps_box": {
-      "x": 962,
-      "y": 695
-    },
-    "regular_button": {
-      "x": 752,
-      "y": 581
-    },
-    "first_sea_button": {
-      "x": 815,
-      "y": 589
-    }
+    "_comment": "Screen Click Coordinates (1920x1080 Screen Relative)",
+    "initial_click": { "x": 1886, "y": 1050 },
+    "ps_button": { "x": 1650, "y": 714 },
+    "ps_box": { "x": 962, "y": 695 },
+    "regular_button": { "x": 752, "y": 581 },
+    "first_sea_button": { "x": 815, "y": 589 }
   }
 }
