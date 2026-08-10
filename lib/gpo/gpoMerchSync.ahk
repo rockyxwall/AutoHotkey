@@ -143,10 +143,7 @@ class GPOMerchSync {
                 break
             }
 
-            MouseMove 1886, 1050
-            Sleep 100
-            Click 1886, 1050
-
+            GPOMerchSync._ClickRoblox(1886, 1050)
             Sleep 400
         }
 
@@ -158,16 +155,12 @@ class GPOMerchSync {
 
         ; Main Menu PS Button
         TrayTip "GPO Sync", "Clicking PS Button (" GPOMerchSync.coordPsBtn.x ", " GPOMerchSync.coordPsBtn.y ")...", 1
-        MouseMove GPOMerchSync.coordPsBtn.x, GPOMerchSync.coordPsBtn.y
-        Sleep 150
-        Click GPOMerchSync.coordPsBtn.x, GPOMerchSync.coordPsBtn.y
+        GPOMerchSync._ClickRoblox(GPOMerchSync.coordPsBtn.x, GPOMerchSync.coordPsBtn.y)
         Sleep 1500
 
         ; PS Code Box
         TrayTip "GPO Sync", "Clicking PS Code Box (" GPOMerchSync.coordPsBox.x ", " GPOMerchSync.coordPsBox.y ")...", 1
-        MouseMove GPOMerchSync.coordPsBox.x, GPOMerchSync.coordPsBox.y
-        Sleep 150
-        Click GPOMerchSync.coordPsBox.x, GPOMerchSync.coordPsBox.y
+        GPOMerchSync._ClickRoblox(GPOMerchSync.coordPsBox.x, GPOMerchSync.coordPsBox.y)
         Sleep 500
 
         ; Paste PS Code & Enter
@@ -180,16 +173,12 @@ class GPOMerchSync {
 
         ; Regular Button
         TrayTip "GPO Sync", "Clicking Regular Button (" GPOMerchSync.coordRegBtn.x ", " GPOMerchSync.coordRegBtn.y ")...", 1
-        MouseMove GPOMerchSync.coordRegBtn.x, GPOMerchSync.coordRegBtn.y
-        Sleep 150
-        Click GPOMerchSync.coordRegBtn.x, GPOMerchSync.coordRegBtn.y
+        GPOMerchSync._ClickRoblox(GPOMerchSync.coordRegBtn.x, GPOMerchSync.coordRegBtn.y)
         Sleep 2000
 
         ; First Sea Button
         TrayTip "GPO Sync", "Clicking First Sea Button (" GPOMerchSync.coordSeaBtn.x ", " GPOMerchSync.coordSeaBtn.y ")...", 1
-        MouseMove GPOMerchSync.coordSeaBtn.x, GPOMerchSync.coordSeaBtn.y
-        Sleep 150
-        Click GPOMerchSync.coordSeaBtn.x, GPOMerchSync.coordSeaBtn.y
+        GPOMerchSync._ClickRoblox(GPOMerchSync.coordSeaBtn.x, GPOMerchSync.coordSeaBtn.y)
 
         ; Return to Desktop 1 until Merchant spawn
         GPOMerchSync.SwitchDesktop(1)
@@ -286,6 +275,25 @@ class GPOMerchSync {
             Sleep 500
         }
         return false
+    }
+
+    static _ClickRoblox(x, y) {
+        CoordMode "Mouse", "Screen"
+        if !WinActive("ahk_exe " GPOMerchSync.PROCESS) {
+            try WinActivate "ahk_exe " GPOMerchSync.PROCESS
+            Sleep 100
+        }
+
+        ; Jiggle mouse slightly (x-2, y-2 then x, y) to force Roblox WM_MOUSEMOVE hover event
+        MouseMove x - 2, y - 2
+        Sleep 30
+        MouseMove x, y
+        Sleep 50
+
+        ; Hold click down for 50ms so Roblox engine registers the press
+        Click "Down"
+        Sleep 50
+        Click "Up"
     }
 
     static SwitchDesktop(targetDesktop) {

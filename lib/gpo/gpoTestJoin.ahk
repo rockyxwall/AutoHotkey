@@ -263,9 +263,17 @@ class GPOTestJoin {
             try WinActivate "ahk_exe " GPOTestJoin.PROCESS
             Sleep 100
         }
+
+        ; Jiggle mouse slightly (x-2, y-2 then x, y) to force Roblox WM_MOUSEMOVE hover event
+        MouseMove x - 2, y - 2
+        Sleep 30
         MouseMove x, y
-        Sleep 100
-        Click x, y
+        Sleep 50
+
+        ; Hold click down for 50ms so Roblox engine registers the press
+        Click "Down"
+        Sleep 50
+        Click "Up"
     }
 
     ; ── Clickthrough Text Status Overlay (Screen 0, 1079) ───────────────────
