@@ -23,7 +23,7 @@ global SLOT := Map(
     2, HoldToggle,
     3, RobloxAFK,
     4, GPOMerchSync,
-    5, GPOTestJoin,
+    5, "Disabled",
     6, "Disabled",
     7, "Disabled",
     8, "Disabled",
