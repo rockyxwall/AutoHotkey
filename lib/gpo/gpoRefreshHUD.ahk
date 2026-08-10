@@ -23,22 +23,30 @@ class GPORefreshHUD {
     static hudTxt          := ""
     static lastToggle      := 0
 
-    ; ── Called to toggle HUD overlay ────────────────────────────────────────
+    ; ── Start / Stop / Toggle HUD ───────────────────────────────────────────
     static Toggle() {
         now := A_TickCount
         if (now - GPORefreshHUD.lastToggle < 500)
             return
         GPORefreshHUD.lastToggle := now
 
-        GPORefreshHUD.running := !GPORefreshHUD.running
-        if GPORefreshHUD.running {
-            GPORefreshHUD.LoadConfig()
-            SetTimer ObjBindMethod(GPORefreshHUD, "_UpdateLoop"), 1000
-            GPORefreshHUD._UpdateLoop()
-        } else {
-            SetTimer ObjBindMethod(GPORefreshHUD, "_UpdateLoop"), 0
-            GPORefreshHUD.HideHUD()
-        }
+        if GPORefreshHUD.running
+            GPORefreshHUD.Stop()
+        else
+            GPORefreshHUD.Start()
+    }
+
+    static Start() {
+        GPORefreshHUD.running := true
+        GPORefreshHUD.LoadConfig()
+        SetTimer ObjBindMethod(GPORefreshHUD, "_UpdateLoop"), 1000
+        GPORefreshHUD._UpdateLoop()
+    }
+
+    static Stop() {
+        GPORefreshHUD.running := false
+        SetTimer ObjBindMethod(GPORefreshHUD, "_UpdateLoop"), 0
+        GPORefreshHUD.HideHUD()
     }
 
     ; ── Interactive Calibration Entry Point ─────────────────────────────────
@@ -161,16 +169,9 @@ class GPORefreshHUD {
 ; HOTKEYS FOR REFRESH HUD & CALIBRATION
 ; ═══════════════════════════════════════════════════════════════════════════
 
-; Numpad6 + Plus to open calibration prompt
-Numpad6 & NumpadAdd::
-NumpadRight & NumpadAdd::
+; Numpad5 + Plus to open calibration prompt
+Numpad5 & NumpadAdd::
+NumpadClear & NumpadAdd::
 {
     GPORefreshHUD.Calibrate()
-}
-
-; Numpad6 + Minus to toggle live HUD overlay on/off
-Numpad6 & NumpadSub::
-NumpadRight & NumpadSub::
-{
-    GPORefreshHUD.Toggle()
 }
