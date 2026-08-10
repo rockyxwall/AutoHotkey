@@ -110,9 +110,7 @@ class GPOTestJoin {
                 break
             }
 
-            MouseMove 1886, 1050
-            Sleep 100
-            Click 1886, 1050
+            GPOTestJoin._ClickRoblox(1886, 1050)
 
             if (!GPOTestJoin._SleepIfRunning(400))
                 return
@@ -129,9 +127,7 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
         GPOTestJoin.ShowStatus("Opening PS...")
-        MouseMove GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
-        Sleep 150
-        Click GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
+        GPOTestJoin._ClickRoblox(GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y)
         if (!GPOTestJoin._SleepIfRunning(1500))
             return
 
@@ -139,9 +135,7 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
         GPOTestJoin.ShowStatus("Focusing Code...")
-        MouseMove GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
-        Sleep 150
-        Click GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
+        GPOTestJoin._ClickRoblox(GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y)
         if (!GPOTestJoin._SleepIfRunning(500))
             return
 
@@ -164,9 +158,7 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
         GPOTestJoin.ShowStatus("Joining Server...")
-        MouseMove GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
-        Sleep 150
-        Click GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
+        GPOTestJoin._ClickRoblox(GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y)
         if (!GPOTestJoin._SleepIfRunning(2000))
             return
 
@@ -174,9 +166,7 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
         GPOTestJoin.ShowStatus("Entering Sea...")
-        MouseMove GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
-        Sleep 150
-        Click GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
+        GPOTestJoin._ClickRoblox(GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y)
 
         if (GPOTestJoin.running) {
             GPOTestJoin.running := false
@@ -265,6 +255,17 @@ class GPOTestJoin {
             try ProcessClose(GPOTestJoin.PROCESS)
             Sleep 500
         }
+    }
+
+    static _ClickRoblox(x, y) {
+        CoordMode "Mouse", "Screen"
+        if !WinActive("ahk_exe " GPOTestJoin.PROCESS) {
+            try WinActivate "ahk_exe " GPOTestJoin.PROCESS
+            Sleep 100
+        }
+        MouseMove x, y
+        Sleep 100
+        Click x, y
     }
 
     ; ── Clickthrough Text Status Overlay (Screen 0, 1079) ───────────────────
