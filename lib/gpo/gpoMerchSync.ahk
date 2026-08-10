@@ -277,18 +277,21 @@ class GPOMerchSync {
         return false
     }
 
-    static _ClickRoblox(x, y) {
+    static _ClickRoblox(x, y, radius := 5) {
         CoordMode "Mouse", "Screen"
         if !WinActive("ahk_exe " GPOMerchSync.PROCESS) {
             try WinActivate "ahk_exe " GPOMerchSync.PROCESS
             Sleep 100
         }
 
-        ; Jiggle mouse slightly (x-2, y-2 then x, y) to force Roblox WM_MOUSEMOVE hover event
-        MouseMove x - 2, y - 2
-        Sleep 30
-        MouseMove x, y
-        Sleep 50
+        ; Randomize position within 5px radius to force Windows & Roblox to register fresh WM_MOUSEMOVE on every click
+        offsetX := Random(-radius, radius)
+        offsetY := Random(-radius, radius)
+        targetX := x + offsetX
+        targetY := y + offsetY
+
+        MouseMove targetX, targetY
+        Sleep 40
 
         ; Hold click down for 50ms so Roblox engine registers the press
         Click "Down"
