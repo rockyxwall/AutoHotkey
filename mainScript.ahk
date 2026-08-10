@@ -9,6 +9,8 @@
 #Include "lib\autoClicker.ahk"
 #Include "lib\holdToggle.ahk"
 #Include "lib\robloxAFK.ahk"
+#Include "lib\gpo\gpoMerchSync.ahk"
+#Include "lib\gpo\gpoTestJoin.ahk"
 
 ; ═══════════════════════════════════════════════════════════════════════════
 ; CONFIGURATION — only thing you ever touch
@@ -19,8 +21,8 @@ global SLOT := Map(
     1, AutoClicker,
     2, HoldToggle,
     3, RobloxAFK,
-    4, "Disabled",
-    5, "Disabled",
+    4, GPOMerchSync,
+    5, GPOTestJoin,
     6, "Disabled",
     7, "Disabled",
     8, "Disabled",
@@ -48,6 +50,8 @@ ExecuteSlot(n) {
 ; ═══════════════════════════════════════════════════════════════════════════
 ; NUMBER KEY HOTKEYS  (no editing needed ever)
 ; ═══════════════════════════════════════════════════════════════════════════
+#MaxThreadsPerHotkey 3
+
 Numpad0 & Numpad1::
 Numpad0 & NumpadEnd::
 NumpadIns & Numpad1::

@@ -1,0 +1,28 @@
+{
+  "gpo_ps_code": "Jk2JKTAKCf",
+  "roblox_place_id": "1730877806",
+  "afk_desktop_index": 3,
+  "confidence": 0.7,
+  "menu_timeout_seconds": 90,
+  "merchant_alarm_lead_seconds": 15,
+  "afk_timeout_seconds": 300,
+  "calibrated_refresh_timestamp": 1786359376.983732,
+  "coords": {
+    "ps_button": {
+      "x": 1650,
+      "y": 714
+    },
+    "ps_box": {
+      "x": 962,
+      "y": 695
+    },
+    "regular_button": {
+      "x": 752,
+      "y": 581
+    },
+    "first_sea_button": {
+      "x": 815,
+      "y": 589
+    }
+  }
+}
