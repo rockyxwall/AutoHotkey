@@ -22,8 +22,6 @@ class GPOTestJoin {
     ; ── State ───────────────────────────────────────────────────────────────
     static running         := false
     static lastToggle      := 0
-    static statusGui       := ""
-    static statusTxt       := ""
 
     ; Defaults from config.json
     static psCode          := "Jk2JKTAKCf"
@@ -45,13 +43,10 @@ class GPOTestJoin {
 
         GPOTestJoin.running := !GPOTestJoin.running
         if GPOTestJoin.running {
-            GPOTestJoin.ShowStatus("Starting...")
             GPOTestJoin.LoadConfig()
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), -10
         } else {
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPOTestJoin.ShowStatus("Stopped")
-            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
 
@@ -59,8 +54,6 @@ class GPOTestJoin {
         if GPOTestJoin.running {
             GPOTestJoin.running := false
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPOTestJoin.ShowStatus("Stopped")
-            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
 
@@ -90,7 +83,6 @@ class GPOTestJoin {
         ; Launch Roblox GPO
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Launching Roblox...")
         Run "roblox://placeId=" GPOTestJoin.placeId
 
         ; Wait up to 20s for Roblox window to exist & focus/maximize it
@@ -102,7 +94,6 @@ class GPOTestJoin {
         ; Constantly click (1886, 1050) until main_screen.png appears (no timeout)
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Loading...")
 
         while (GPOTestJoin.running) {
             foundX := 0, foundY := 0
@@ -119,14 +110,12 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
 
-        GPOTestJoin.ShowStatus("Menu Found...")
         if (!GPOTestJoin._SleepIfRunning(1000))
             return
 
         ; Main Menu PS Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Opening PS...")
         GPOTestJoin._ClickRoblox(GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y)
         if (!GPOTestJoin._SleepIfRunning(1500))
             return
@@ -134,7 +123,6 @@ class GPOTestJoin {
         ; PS Code Box
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Focusing Code...")
         GPOTestJoin._ClickRoblox(GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y)
         if (!GPOTestJoin._SleepIfRunning(500))
             return
@@ -142,7 +130,6 @@ class GPOTestJoin {
         ; Paste PS Code & Enter
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Pasting Code...")
         A_Clipboard := GPOTestJoin.psCode
         ClipWait 1
         if (!GPOTestJoin.running)
@@ -157,7 +144,6 @@ class GPOTestJoin {
         ; Regular Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Joining Server...")
         GPOTestJoin._ClickRoblox(GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y)
         if (!GPOTestJoin._SleepIfRunning(2000))
             return
@@ -165,13 +151,10 @@ class GPOTestJoin {
         ; First Sea Button
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Entering Sea...")
         GPOTestJoin._ClickRoblox(GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y)
 
         if (GPOTestJoin.running) {
             GPOTestJoin.running := false
-            GPOTestJoin.ShowStatus("Join Complete!")
-            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -3000
         }
     }
 
@@ -277,31 +260,6 @@ class GPOTestJoin {
         Click "Down"
         Sleep 50
         Click "Up"
-    }
-
-    ; ── Clickthrough Text Status Overlay (Screen 0, 1079) ───────────────────
-    static ShowStatus(text) {
-        if (!GPOTestJoin.statusGui) {
-            ; +AlwaysOnTop: keep overlay visible over game windows
-            ; -Caption: remove title bar and borders
-            ; +ToolWindow: hide from taskbar & Alt-Tab switcher
-            ; +E0x20: WS_EX_TRANSPARENT makes GUI 100% clickthrough (clicks pass directly to underlying window)
-            GPOTestJoin.statusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
-            GPOTestJoin.statusGui.BackColor := "0d0d11"
-            GPOTestJoin.statusGui.SetFont("s10 c0x00FF88 Bold", "Segoe UI")
-            GPOTestJoin.statusTxt := GPOTestJoin.statusGui.Add("Text", "w200 h24 Left", text)
-            WinSetTransColor "0d0d11 220", GPOTestJoin.statusGui
-        } else {
-            GPOTestJoin.statusTxt.Value := text
-        }
-        ; Position overlay at Screen (0, 1079) without stealing input focus
-        GPOTestJoin.statusGui.Show("x0 y1055 NoActivate")
-    }
-
-    static HideStatus() {
-        if (GPOTestJoin.statusGui) {
-            GPOTestJoin.statusGui.Hide()
-        }
     }
 
     static LoadConfig() {
