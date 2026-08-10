@@ -292,11 +292,11 @@ class GPOTestJoin {
 }
 
 ; ═══════════════════════════════════════════════════════════════════════════
-; SLOT 6 CONTROL HOTKEYS
+; SLOT 5 CONTROL HOTKEYS
 ; ═══════════════════════════════════════════════════════════════════════════
 
-Numpad6 & NumpadSub::
-NumpadRight & NumpadSub::
+Numpad5 & NumpadSub::
+NumpadClear & NumpadSub::
 {
     GPOTestJoin.Toggle()
 }

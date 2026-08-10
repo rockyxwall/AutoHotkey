@@ -380,16 +380,16 @@ class GPOMerchSync {
 ; SLOT CONTROL & GLOBAL CYCLE HOTKEYS
 ; ═══════════════════════════════════════════════════════════════════════════
 
-; Slot 5 Control: Numpad5 + Plus to calibrate stock refresh timestamp
-Numpad5 & NumpadAdd::
-NumpadClear & NumpadAdd::
+; Slot 4 Control: Numpad4 + Plus to calibrate stock refresh timestamp
+Numpad4 & NumpadAdd::
+NumpadLeft & NumpadAdd::
 {
     GPOMerchSync.CalibrateTimestamp()
 }
 
-; Slot 5 Control: Numpad5 + Minus to toggle looper on/off
-Numpad5 & NumpadSub::
-NumpadClear & NumpadSub::
+; Slot 4 Control: Numpad4 + Minus to toggle looper on/off
+Numpad4 & NumpadSub::
+NumpadLeft & NumpadSub::
 {
     GPOMerchSync.Toggle()
 }

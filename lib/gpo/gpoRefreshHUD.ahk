@@ -169,9 +169,16 @@ class GPORefreshHUD {
 ; HOTKEYS FOR REFRESH HUD & CALIBRATION
 ; ═══════════════════════════════════════════════════════════════════════════
 
-; Numpad5 + Plus to open calibration prompt
-Numpad5 & NumpadAdd::
-NumpadClear & NumpadAdd::
+; Numpad4 + Plus to open calibration prompt
+Numpad4 & NumpadAdd::
+NumpadLeft & NumpadAdd::
 {
     GPORefreshHUD.Calibrate()
+}
+
+; Numpad4 + Minus to toggle live HUD overlay on/off
+Numpad4 & NumpadSub::
+NumpadLeft & NumpadSub::
+{
+    GPORefreshHUD.Toggle()
 }
