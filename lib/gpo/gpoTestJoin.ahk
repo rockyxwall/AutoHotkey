@@ -75,7 +75,6 @@ class GPOTestJoin {
         ; Switch to AFK Desktop
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Switching Desktop...")
         GPOTestJoin.SwitchDesktop(GPOTestJoin.afkDesktop)
         if (!GPOTestJoin._SleepIfRunning(500))
             return
