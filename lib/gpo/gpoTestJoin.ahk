@@ -22,6 +22,8 @@ class GPOTestJoin {
     ; ── State ───────────────────────────────────────────────────────────────
     static running         := false
     static lastToggle      := 0
+    static statusGui       := ""
+    static statusTxt       := ""
 
     ; Defaults from config.json
     static psCode          := "Jk2JKTAKCf"
@@ -43,12 +45,13 @@ class GPOTestJoin {
 
         GPOTestJoin.running := !GPOTestJoin.running
         if GPOTestJoin.running {
-            TrayTip "Starting direct join workflow test on Desktop #" GPOTestJoin.afkDesktop "...", "GPO Test Join", 1
+            GPOTestJoin.ShowStatus("Starting direct join workflow test on Desktop #" GPOTestJoin.afkDesktop "...")
             GPOTestJoin.LoadConfig()
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), -10
         } else {
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            TrayTip "Direct join workflow stopped.", "GPO Test Join Stopped", 1
+            GPOTestJoin.ShowStatus("Direct join workflow stopped.")
+            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
 
@@ -56,7 +59,8 @@ class GPOTestJoin {
         if GPOTestJoin.running {
             GPOTestJoin.running := false
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            TrayTip "Direct join workflow stopped.", "GPO Test Join Stopped", 1
+            GPOTestJoin.ShowStatus("Direct join workflow stopped.")
+            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -1500
         }
     }
 
@@ -93,7 +97,7 @@ class GPOTestJoin {
         ; Constantly click (50, 1000) until main_screen.png appears (no timeout)
         if (!GPOTestJoin.running)
             return
-        TrayTip "Clicking (50, 1000) until main_screen.png appears...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("Clicking (50, 1000) until main_screen.png appears...")
 
         while (GPOTestJoin.running) {
             foundX := 0, foundY := 0
@@ -112,14 +116,14 @@ class GPOTestJoin {
         if (!GPOTestJoin.running)
             return
 
-        TrayTip "main_screen.png detected! Proceeding to main menu...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("main_screen.png detected! Proceeding to main menu...")
         if (!GPOTestJoin._SleepIfRunning(1000))
             return
 
         ; Main Menu PS Button
         if (!GPOTestJoin.running)
             return
-        TrayTip "Clicking PS Button (" GPOTestJoin.coordPsBtn.x ", " GPOTestJoin.coordPsBtn.y ")...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("Clicking PS Button (" GPOTestJoin.coordPsBtn.x ", " GPOTestJoin.coordPsBtn.y ")...")
         MouseMove GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
         Sleep 150
         Click GPOTestJoin.coordPsBtn.x, GPOTestJoin.coordPsBtn.y
@@ -129,7 +133,7 @@ class GPOTestJoin {
         ; PS Code Box
         if (!GPOTestJoin.running)
             return
-        TrayTip "Clicking PS Code Box (" GPOTestJoin.coordPsBox.x ", " GPOTestJoin.coordPsBox.y ")...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("Clicking PS Code Box (" GPOTestJoin.coordPsBox.x ", " GPOTestJoin.coordPsBox.y ")...")
         MouseMove GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
         Sleep 150
         Click GPOTestJoin.coordPsBox.x, GPOTestJoin.coordPsBox.y
@@ -139,7 +143,7 @@ class GPOTestJoin {
         ; Paste PS Code & Enter
         if (!GPOTestJoin.running)
             return
-        TrayTip "Pasting PS Code: " GPOTestJoin.psCode, "GPO Test", 1
+        GPOTestJoin.ShowStatus("Pasting PS Code: " GPOTestJoin.psCode)
         A_Clipboard := GPOTestJoin.psCode
         ClipWait 1
         if (!GPOTestJoin.running)
@@ -154,7 +158,7 @@ class GPOTestJoin {
         ; Regular Button
         if (!GPOTestJoin.running)
             return
-        TrayTip "Clicking Regular Button (" GPOTestJoin.coordRegBtn.x ", " GPOTestJoin.coordRegBtn.y ")...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("Clicking Regular Button (" GPOTestJoin.coordRegBtn.x ", " GPOTestJoin.coordRegBtn.y ")...")
         MouseMove GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
         Sleep 150
         Click GPOTestJoin.coordRegBtn.x, GPOTestJoin.coordRegBtn.y
@@ -164,14 +168,15 @@ class GPOTestJoin {
         ; First Sea Button
         if (!GPOTestJoin.running)
             return
-        TrayTip "Clicking First Sea Button (" GPOTestJoin.coordSeaBtn.x ", " GPOTestJoin.coordSeaBtn.y ")...", "GPO Test", 1
+        GPOTestJoin.ShowStatus("Clicking First Sea Button (" GPOTestJoin.coordSeaBtn.x ", " GPOTestJoin.coordSeaBtn.y ")...")
         MouseMove GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
         Sleep 150
         Click GPOTestJoin.coordSeaBtn.x, GPOTestJoin.coordSeaBtn.y
 
         if (GPOTestJoin.running) {
             GPOTestJoin.running := false
-            TrayTip "Join sequence finished!", "GPO Direct Join Test Complete", 1
+            GPOTestJoin.ShowStatus("Join sequence finished!")
+            SetTimer ObjBindMethod(GPOTestJoin, "HideStatus"), -3000
         }
     }
 
@@ -245,6 +250,31 @@ class GPOTestJoin {
             Sleep 150
         }
         Sleep 250
+    }
+
+    ; ── Clickthrough Text Status Overlay (Position 50, 1000) ───────────────
+    static ShowStatus(text) {
+        if (!GPOTestJoin.statusGui) {
+            ; +AlwaysOnTop: keep overlay visible over game windows
+            ; -Caption: remove title bar and borders
+            ; +ToolWindow: hide from taskbar & Alt-Tab switcher
+            ; +E0x20: WS_EX_TRANSPARENT makes GUI 100% clickthrough (clicks pass directly to underlying window)
+            GPOTestJoin.statusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+            GPOTestJoin.statusGui.BackColor := "0d0d11"
+            GPOTestJoin.statusGui.SetFont("s10 c0x00FF88 Bold", "Segoe UI")
+            GPOTestJoin.statusTxt := GPOTestJoin.statusGui.Add("Text", "w450 h24 Center", text)
+            WinSetTransColor "0d0d11 220", GPOTestJoin.statusGui
+        } else {
+            GPOTestJoin.statusTxt.Value := text
+        }
+        ; Position overlay at (50, 1000) without stealing input focus
+        GPOTestJoin.statusGui.Show("x50 y1000 NoActivate")
+    }
+
+    static HideStatus() {
+        if (GPOTestJoin.statusGui) {
+            GPOTestJoin.statusGui.Hide()
+        }
     }
 
     static LoadConfig() {
