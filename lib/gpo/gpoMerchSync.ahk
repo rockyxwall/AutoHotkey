@@ -134,8 +134,8 @@ class GPOMerchSync {
             return
         Sleep 1000
 
-        ; Constantly click (50, 1000) until main_screen.png appears (no timeout)
-        TrayTip "GPO Sync", "Clicking (50, 1000) until main_screen.png appears...", 1
+        ; Constantly click (1886, 1050) until main_screen.png appears (no timeout)
+        TrayTip "Clicking (1886, 1050) until main_screen.png appears...", "GPO Sync", 1
 
         while (GPOMerchSync.running) {
             foundX := 0, foundY := 0
@@ -143,9 +143,9 @@ class GPOMerchSync {
                 break
             }
 
-            MouseMove 50, 1000
+            MouseMove 1886, 1050
             Sleep 100
-            Click 50, 1000
+            Click 1886, 1050
 
             Sleep 400
         }

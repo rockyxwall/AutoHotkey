@@ -94,10 +94,10 @@ class GPOTestJoin {
         if (!GPOTestJoin._SleepIfRunning(1000))
             return
 
-        ; Constantly click (50, 1000) until main_screen.png appears (no timeout)
+        ; Constantly click (1886, 1050) until main_screen.png appears (no timeout)
         if (!GPOTestJoin.running)
             return
-        GPOTestJoin.ShowStatus("Clicking (50, 1000) until main_screen.png appears...")
+        GPOTestJoin.ShowStatus("Clicking (1886, 1050) until main_screen.png appears...")
 
         while (GPOTestJoin.running) {
             foundX := 0, foundY := 0
@@ -105,9 +105,9 @@ class GPOTestJoin {
                 break
             }
 
-            MouseMove 50, 1000
+            MouseMove 1886, 1050
             Sleep 100
-            Click 50, 1000
+            Click 1886, 1050
 
             if (!GPOTestJoin._SleepIfRunning(400))
                 return
