@@ -76,6 +76,9 @@ class GPOTestJoin {
         CoordMode "Pixel", "Screen"
         CoordMode "Mouse", "Screen"
 
+        ; Ensure any existing/stuck Roblox process is closed for a clean launch
+        GPOTestJoin.ForceKillRoblox()
+
         ; Switch to AFK Desktop
         if (!GPOTestJoin.running)
             return
@@ -252,6 +255,16 @@ class GPOTestJoin {
             Sleep 150
         }
         Sleep 250
+
+        ; Release modifier keys to avoid stuck modifier keys when executing Run
+        Send "{LWin up}{LCtrl up}{Alt up}{Shift up}"
+    }
+
+    static ForceKillRoblox() {
+        if ProcessExist(GPOTestJoin.PROCESS) {
+            try ProcessClose(GPOTestJoin.PROCESS)
+            Sleep 500
+        }
     }
 
     ; ── Clickthrough Text Status Overlay (Screen 0, 1079) ───────────────────
