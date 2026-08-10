@@ -44,11 +44,9 @@ class GPOTestJoin {
         GPOTestJoin.running := !GPOTestJoin.running
         if GPOTestJoin.running {
             GPOTestJoin.LoadConfig()
-            GPORefreshHUD.Start()
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), -10
         } else {
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPORefreshHUD.Stop()
         }
     }
 
@@ -56,7 +54,6 @@ class GPOTestJoin {
         if GPOTestJoin.running {
             GPOTestJoin.running := false
             SetTimer ObjBindMethod(GPOTestJoin, "_StartWorkflowAsync"), 0
-            GPORefreshHUD.Stop()
         }
     }
 
@@ -295,11 +292,11 @@ class GPOTestJoin {
 }
 
 ; ═══════════════════════════════════════════════════════════════════════════
-; SLOT 5 CONTROL HOTKEYS
+; SLOT 6 CONTROL HOTKEYS
 ; ═══════════════════════════════════════════════════════════════════════════
 
-Numpad5 & NumpadSub::
-NumpadClear & NumpadSub::
+Numpad6 & NumpadSub::
+NumpadRight & NumpadSub::
 {
     GPOTestJoin.Toggle()
 }

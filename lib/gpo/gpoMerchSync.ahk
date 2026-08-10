@@ -45,37 +45,21 @@ class GPOMerchSync {
         GPOMerchSync.running := !GPOMerchSync.running
         if GPOMerchSync.running {
             GPOMerchSync.LoadConfig()
+            GPORefreshHUD.Start()
             SetTimer ObjBindMethod(GPOMerchSync, "_Loop"), 1000
-            TrayTip "GPO Merch Sync Active", "Monitoring stock refresh schedule...", 1
+            TrayTip "Monitoring stock refresh schedule...", "GPO Merch Sync Active", 1
         } else {
             SetTimer ObjBindMethod(GPOMerchSync, "_Loop"), 0
             GPOMerchSync.inCycle := false
-            TrayTip "GPO Merch Sync Stopped", "Looper disabled.", 1
+            GPORefreshHUD.Stop()
+            TrayTip "Looper disabled.", "GPO Merch Sync Stopped", 1
         }
     }
 
     ; ── Hotkey Calibration Entry Point ───────────────────────────────────────
     static CalibrateTimestamp() {
-        ib := InputBox("Enter remaining time until Global Refresh (e.g. '14:30' or '15'):", "GPO Merchant Sync Calibration", "w350 h130")
-        if (ib.Result != "OK" || ib.Value == "")
-            return
-
-        mins := 0
-        secs := 0
-        if InStr(ib.Value, ":") {
-            parts := StrSplit(ib.Value, ":")
-            mins := Integer(parts[1])
-            secs := Integer(parts[2])
-        } else {
-            mins := Integer(ib.Value)
-        }
-
-        totalSecs := (mins * 60) + secs
-        nowUnix := GPOMerchSync._GetUnixTime()
-        GPOMerchSync.calibratedTs := nowUnix + totalSecs
-        GPOMerchSync.SaveConfig()
-
-        TrayTip "Calibration Saved", "Next Refresh set in " mins "m " secs "s.", 1
+        GPORefreshHUD.Calibrate()
+        GPOMerchSync.LoadConfig()
     }
 
     ; ── Cycle Lifecycle Control ─────────────────────────────────────────────
@@ -83,16 +67,17 @@ class GPOMerchSync {
         GPOMerchSync.inCycle := false
         GPOMerchSync.ForceKillRoblox()
         GPOMerchSync.SwitchDesktop(1)
-        TrayTip "Cycle Finished", "Roblox closed. Returned to Desktop 1.", 1
+        TrayTip "Roblox closed. Returned to Desktop 1.", "Cycle Finished", 1
     }
 
     static EmergencyStop() {
         GPOMerchSync.running := false
         GPOMerchSync.inCycle := false
         SetTimer ObjBindMethod(GPOMerchSync, "_Loop"), 0
+        GPORefreshHUD.Stop()
         GPOMerchSync.ForceKillRoblox()
         GPOMerchSync.SwitchDesktop(1)
-        TrayTip "EMERGENCY STOP", "GPO Merch Sync force stopped.", 1
+        TrayTip "GPO Merch Sync force stopped.", "EMERGENCY STOP", 1
     }
 
     ; ── Internal Loop ───────────────────────────────────────────────────────
@@ -102,9 +87,15 @@ class GPOMerchSync {
 
         nowUnix := GPOMerchSync._GetUnixTime()
 
-        ; Determine next refresh target
-        if (GPOMerchSync.calibratedTs > nowUnix) {
-            GPOMerchSync.targetRefresh := GPOMerchSync.calibratedTs
+        ; Determine next refresh target (recurs every 30 mins / 1800s)
+        if (GPOMerchSync.calibratedTs > 0) {
+            diff := GPOMerchSync.calibratedTs - nowUnix
+            if (diff <= 0) {
+                cyclesPassed := Floor(Abs(diff) / 1800) + 1
+                GPOMerchSync.targetRefresh := GPOMerchSync.calibratedTs + (cyclesPassed * 1800)
+            } else {
+                GPOMerchSync.targetRefresh := GPOMerchSync.calibratedTs
+            }
         } else {
             ; Auto top-of-hour alignment (every 30 mins)
             rem := Mod(nowUnix, 1800)
@@ -389,16 +380,16 @@ class GPOMerchSync {
 ; SLOT CONTROL & GLOBAL CYCLE HOTKEYS
 ; ═══════════════════════════════════════════════════════════════════════════
 
-; Slot 4 Control: Numpad4 + Plus to calibrate stock refresh timestamp
-Numpad4 & NumpadAdd::
-NumpadLeft & NumpadAdd::
+; Slot 5 Control: Numpad5 + Plus to calibrate stock refresh timestamp
+Numpad5 & NumpadAdd::
+NumpadClear & NumpadAdd::
 {
     GPOMerchSync.CalibrateTimestamp()
 }
 
-; Slot 4 Control: Numpad4 + Minus to toggle looper on/off
-Numpad4 & NumpadSub::
-NumpadLeft & NumpadSub::
+; Slot 5 Control: Numpad5 + Minus to toggle looper on/off
+Numpad5 & NumpadSub::
+NumpadClear & NumpadSub::
 {
     GPOMerchSync.Toggle()
 }
