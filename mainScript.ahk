@@ -11,6 +11,7 @@
 #Include "lib\robloxAFK.ahk"
 #Include "lib\gpo\gpoMerchSync.ahk"
 #Include "lib\gpo\gpoTestJoin.ahk"
+#Include "lib\gpo\gpoRefreshHUD.ahk"
 
 ; ═══════════════════════════════════════════════════════════════════════════
 ; CONFIGURATION — only thing you ever touch
@@ -23,7 +24,7 @@ global SLOT := Map(
     3, RobloxAFK,
     4, GPOMerchSync,
     5, GPOTestJoin,
-    6, "Disabled",
+    6, GPORefreshHUD,
     7, "Disabled",
     8, "Disabled",
     9, "Disabled"
